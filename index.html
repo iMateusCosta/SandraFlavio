@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sandra & Flávio - Renovação de Votos</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <!-- Google Fonts: Playfair Display & Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <!-- Supabase JS Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    h1, h2, h3, .font-serif { font-family: 'Playfair Display', serif; }
+  </style>
+</head>
+<body class="bg-rose-50/50 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+
+  <!-- CABEÇALHO -->
+  <header class="bg-white/80 backdrop-blur-md border-b border-rose-100 sticky top-0 z-50 shadow-xs">
+    <div class="max-w-5xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="text-center md:text-left">
+        <h1 class="text-2xl md:text-3xl font-serif text-rose-900 tracking-wide">Sandra & Flávio</h1>
+        <p class="text-xs uppercase tracking-widest text-rose-500 font-medium">Renovação de Votos • 27.11.2026</p>
+      </div>
+      
+      <!-- Navegação -->
+      <nav class="flex flex-wrap justify-center gap-2 md:gap-6 text-sm font-medium text-slate-600">
+        <button onclick="mudarAba('inicio')" id="btn-inicio" class="px-3 py-2 rounded-lg transition hover:text-rose-700 hover:bg-rose-50 text-rose-700 bg-rose-50/80">Início</button>
+        <button onclick="mudarAba('rsvp')" id="btn-rsvp" class="px-3 py-2 rounded-lg transition hover:text-rose-700 hover:bg-rose-50">Confirmação</button>
+        <button onclick="mudarAba('presentes')" id="btn-presentes" class="px-3 py-2 rounded-lg transition hover:text-rose-700 hover:bg-rose-50">Lista de Presentes</button>
+        <button onclick="mudarAba('admin')" id="btn-admin" class="px-3 py-2 rounded-lg transition hover:text-rose-700 hover:bg-rose-50 text-rose-900/60 font-semibold">🔒 Área dos Noivos</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main class="max-w-4xl mx-auto px-4 py-8 flex-grow w-full">
+
+    <!-- SEÇÃO: INÍCIO -->
+    <section id="secao-inicio" class="space-y-12">
+      <div class="text-center space-y-4 max-w-2xl mx-auto py-8">
+        <span class="text-rose-600 font-medium tracking-widest text-sm uppercase">Celebração de Amor</span>
+        <h2 class="text-4xl md:text-5xl font-serif text-rose-950">Renovando nossos votos e memórias</h2>
+        <p class="text-slate-600 text-base md:text-lg leading-relaxed">
+          Com o coração cheio de alegria, convidamos você e sua família para celebrar conosco este momento especial em nossas vidas.
+        </p>
+      </div>
+
+      <!-- Detalhes do Evento & Contagem Regressiva -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white p-8 rounded-2xl shadow-xs border border-rose-100 text-center space-y-3">
+          <div class="w-12 h-12 bg-rose-50 text-rose-600 rounded-full flex items-center justify-center mx-auto text-xl">📅</div>
+          <h3 class="font-serif text-xl text-rose-900">Data e Horário</h3>
+          <p class="text-slate-600">27 de Novembro de 2026</p>
+          <p class="text-sm text-slate-500">Às 16h00</p>
+        </div>
+
+        <div class="bg-white p-8 rounded-2xl shadow-xs border border-rose-100 text-center space-y-3">
+          <div class="w-12 h-12 bg-rose-50 text-rose-600 rounded-full flex items-center justify-center mx-auto text-xl">📍</div>
+          <h3 class="font-serif text-xl text-rose-900">Local</h3>
+          <p class="text-slate-600">Espaço de Eventos Bella Vista</p>
+          <p class="text-sm text-slate-500">Rua das Flores, 123 - Cidade/UF</p>
+        </div>
+      </div>
+
+      <!-- Contagem Regressiva -->
+      <div class="bg-rose-900 text-white p-8 rounded-2xl text-center space-y-4 shadow-md">
+        <h3 class="font-serif text-2xl tracking-wide">Contagem Regressiva para o Grande Dia</h3>
+        <div id="countdown" class="flex justify-center gap-6 text-rose-100 font-serif text-3xl md:text-4xl">
+          <div><span id="dias">00</span><span class="block text-xs font-sans tracking-normal uppercase text-rose-300 mt-1">Dias</span></div>
+          <div>:</div>
+          <div><span id="horas">00</span><span class="block text-xs font-sans tracking-normal uppercase text-rose-300 mt-1">Horas</span></div>
+          <div>:</div>
+          <div><span id="minutos">00</span><span class="block text-xs font-sans tracking-normal uppercase text-rose-300 mt-1">Minutos</span></div>
+          <div>:</div>
+          <div><span id="segundos">00</span><span class="block text-xs font-sans tracking-normal uppercase text-rose-300 mt-1">Segundos</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEÇÃO: RSVP (CONFIRMAÇÃO DE PRESENÇA) -->
+    <section id="secao-rsvp" class="hidden max-w-lg mx-auto">
+      <div class="bg-white p-8 rounded-2xl shadow-xs border border-rose-100 space-y-6">
+        <div class="text-center space-y-2">
+          <h2 class="text-3xl font-serif text-rose-950">Confirmação de Presença</h2>
+          <p class="text-sm text-slate-500">Por favor, confirme sua presença preenchendo os dados abaixo até o dia 01/11/2026.</p>
+        </div>
+
+        <form id="form-rsvp" onsubmit="enviarRSVP(event)" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Nome Completo</label>
+            <input type="text" id="rsvp-nome" required class="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-500 text-sm">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Número de Acompanhantes</label>
+            <input type="number" id="rsvp-acompanhantes" min="0" value="0" class="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-500 text-sm">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Confirmação</label>
+            <select id="rsvp-status" class="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-500 text-sm bg-white">
+              <option value="Confirmado">Sim, estarei presente!</option>
+              <option value="Não poderá comparecer">Infelizmente não poderei comparecer</option>
+            </select>
+          </div>
+          <button type="submit" id="btn-enviar-rsvp" class="w-full bg-rose-700 text-white font-medium py-3 rounded-lg hover:bg-rose-800 transition shadow-sm">
+            Enviar Confirmação
+          </button>
+        </form>
+        <div id="rsvp-mensagem" class="text-center text-sm font-medium hidden"></div>
+      </div>
+    </section>
+
+    <!-- SEÇÃO: LISTA DE PRESENTES -->
+    <section id="secao-presentes" class="hidden space-y-8">
+      <div class="text-center space-y-2 max-w-xl mx-auto">
+        <h2 class="text-3xl font-serif text-rose-950">Lista de Presentes</h2>
+        <p class="text-sm text-slate-600">A sua presença é o nosso maior presente! Se desejar nos presentear com alguma cota para a nossa lua de mel ou comemoração, escolha abaixo:</p>
+      </div>
+
+      <div id="grid-presentes" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <p class="text-center text-slate-500 col-span-full py-8">Carregando lista de presentes...</p>
+      </div>
+    </section>
+
+    <!-- SEÇÃO: PAINEL ADMINISTRADOR (ÁREA DOS NOIVOS) -->
+    <section id="secao-admin" class="hidden space-y-8">
+      <!-- Login do Admin -->
+      <div id="admin-login" class="max-w-md mx-auto bg-white p-8 rounded-2xl shadow-xs border border-rose-100 space-y-4">
+        <h2 class="text-2xl font-serif text-rose-950 text-center">Área Exclusiva dos Noivos</h2>
+        <p class="text-xs text-slate-500 text-center">Digite a senha de acesso para visualizar as confirmações e gerenciar presentes.</p>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Senha</label>
+          <input type="password" id="admin-senha-input" class="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-500 text-sm">
+        </div>
+        <button onclick="verificarSenhaAdmin()" class="w-full bg-rose-900 text-white font-medium py-2.5 rounded-lg hover:bg-rose-950 transition">Entrar no Painel</button>
+        <p id="admin-erro" class="text-red-500 text-xs text-center hidden">Senha incorreta!</p>
+      </div>
+
+      <!-- Conteúdo do Painel Admin -->
+      <div id="admin-conteudo" class="hidden space-y-8">
+        <div class="flex justify-between items-center bg-white p-6 rounded-2xl shadow-xs border border-rose-100">
+          <div>
+            <h2 class="text-2xl font-serif text-rose-950">Painel de Controle</h2>
+            <p class="text-sm text-slate-500">Gerencie convidados e presentes em tempo real.</p>
+          </div>
+          <button onclick="sairAdmin()" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-200 transition">Sair</button>
+        </div>
+
+        <!-- Estatísticas Rápidas -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="bg-white p-6 rounded-2xl border border-rose-100 text-center">
+            <span class="text-3xl font-serif text-rose-700" id="stat-total-convidados">0</span>
+            <p class="text-xs uppercase tracking-wider text-slate-500 mt-1">Total de Confirmações</p>
+          </div>
+          <div class="bg-white p-6 rounded-2xl border border-rose-100 text-center">
+            <span class="text-3xl font-serif text-rose-700" id="stat-total-acompanhantes">0</span>
+            <p class="text-xs uppercase tracking-wider text-slate-500 mt-1">Total de Acompanhantes</p>
+          </div>
+          <div class="bg-white p-6 rounded-2xl border border-rose-100 text-center">
+            <span class="text-3xl font-serif text-rose-700" id="stat-total-geral">0</span>
+            <p class="text-xs uppercase tracking-wider text-slate-500 mt-1">Pessoas Esperadas</p>
+          </div>
+        </div>
+
+        <!-- Tabela de Convidados Confirmados -->
+        <div class="bg-white p-6 rounded-2xl border border-rose-100 space-y-4">
+          <h3 class="font-serif text-xl text-rose-900">Lista de Convidados Confirmados</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm text-slate-600">
+              <thead class="bg-rose-50/50 text-rose-900 font-medium">
+                <tr>
+                  <th class="p-3 rounded-l-lg">Nome</th>
+                  <th class="p-3">Acompanhantes</th>
+                  <th class="p-3">Status</th>
+                  <th class="p-3 rounded-r-lg">Data</th>
+                </tr>
+              </thead>
+              <tbody id="tabela-convidados-body" class="divide-y divide-slate-100">
+                <!-- Preenchido via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Adicionar Novo Presente -->
+        <div class="bg-white p-6 rounded-2xl border border-rose-100 space-y-4 max-w-xl">
+          <h3 class="font-serif text-xl text-rose-900">Adicionar Cota / Presente</h3>
+          <form onsubmit="adicionarPresente(event)" class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1">Nome do Item / Cota</label>
+              <input type="text" id="novo-item-nome" required class="w-full px-4 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1">Valor (R$)</label>
+              <input type="number" step="0.01" id="novo-item-valor" required class="w-full px-4 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1">Link de Pagamento do Mercado Pago</label>
+              <input type="url" id="novo-item-link" placeholder="https://mpago.la/..." required class="w-full px-4 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500">
+            </div>
+            <button type="submit" class="w-full bg-rose-700 text-white font-medium py-2 rounded-lg hover:bg-rose-800 transition text-sm">Cadastrar Presente</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- RODAPÉ -->
+  <footer class="bg-white border-t border-rose-100 py-6 text-center text-xs text-slate-500 mt-12">
+    <p>Com amor, Sandra & Flávio — 2026</p>
+  </footer>
+
+  <!-- SCRIPT DE CONFIGURAÇÃO E SUPABASE -->
+  <script>
+    // ==========================================
+    // ⚙️ CONFIGURAÇÃO DO SUPABASE (Insira seus dados)
+    // ==========================================
+    const SUPABASE_URL = 'https://qyadsgivfqzmtjgzmxhr.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_PcsW3cKl6uRz1x4jSwQulw_QC4T1pMP';
+    
+    // Inicializa o cliente Supabase utilizando a variável correta
+    let supabaseClient = null;
+    if (SUPABASE_URL !== 'SUA_SUPABASE_URL_AQUI' && window.supabase) {
+      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    }
+
+    // Senha do painel administrativo
+    const SENHA_ADMIN = 'senha123';
+
+    // Navegação entre abas
+    function mudarAba(aba) {
+      ['inicio', 'rsvp', 'presentes', 'admin'].forEach(a => {
+        const secao = document.getElementById(`secao-${a}`);
+        const btn = document.getElementById(`btn-${a}`);
+        if (secao) secao.classList.add('hidden');
+        if (btn) btn.classList.remove('text-rose-700', 'bg-rose-50/80', 'font-semibold');
+      });
+      
+      const secaoAtiva = document.getElementById(`secao-${aba}`);
+      const btnAtivo = document.getElementById(`btn-${aba}`);
+      if (secaoAtiva) secaoAtiva.classList.remove('hidden');
+      if (btnAtivo) btnAtivo.classList.add('text-rose-700', 'bg-rose-50/80', 'font-semibold');
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      if (aba === 'presentes') carregarPresentes();
+      if (aba === 'admin') verificarSessaoAdmin();
+    }
+
+    // Contagem Regressiva
+    const dataAlvo = new Date('November 27, 2026 16:00:00').getTime();
+    setInterval(() => {
+      const agora = new Date().getTime();
+      const diferenca = dataAlvo - agora;
+      if (diferenca > 0) {
+        const d = document.getElementById('dias');
+        const h = document.getElementById('horas');
+        const m = document.getElementById('minutos');
+        const s = document.getElementById('segundos');
+        if (d) d.innerText = Math.floor(diferenca / (1000 * 60 * 60 * 24));
+        if (h) h.innerText = Math.floor((diferenca % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        if (m) m.innerText = Math.floor((diferenca % (1000 * 60 * 60)) / (1000 * 60));
+        if (s) s.innerText = Math.floor((diferenca % (1000 * 60)) / 1000);
+      }
+    }, 1000);
+
+    // Envio do RSVP
+    async function enviarRSVP(e) {
+      e.preventDefault();
+      const nome = document.getElementById('rsvp-nome').value;
+      const acompanhantes = parseInt(document.getElementById('rsvp-acompanhantes').value) || 0;
+      const status = document.getElementById('rsvp-status').value;
+      const msgDiv = document.getElementById('rsvp-mensagem');
+
+      if (!supabaseClient) {
+        msgDiv.innerText = '⚠️ Configure as chaves do Supabase no código para salvar os dados.';
+        msgDiv.className = 'text-center text-sm font-medium text-amber-600 block';
+        return;
+      }
+
+      const { error } = await supabaseClient.from('convidados').insert([{ nome, acompanhantes, status }]);
+      
+      if (error) {
+        msgDiv.innerText = 'Erro ao enviar confirmação. Tente novamente.';
+        msgDiv.className = 'text-center text-sm font-medium text-red-600 block';
+      } else {
+        msgDiv.innerText = '✨ Presença confirmada com sucesso! Muito obrigado(a).';
+        msgDiv.className = 'text-center text-sm font-medium text-rose-700 block';
+        document.getElementById('form-rsvp').reset();
+      }
+    }
+
+    // Carregar Lista de Presentes
+    async function carregarPresentes() {
+      const grid = document.getElementById('grid-presentes');
+      if (!supabaseClient) {
+        grid.innerHTML = '<p class="text-center text-slate-500 col-span-full py-8">Configure as chaves do Supabase para visualizar os presentes.</p>';
+        return;
+      }
+
+      const { data, error } = await supabaseClient.from('presentes').select('*');
+      if (error || !data || data.length === 0) {
+        grid.innerHTML = '<p class="text-center text-slate-500 col-span-full py-8">Nenhum presente cadastrado no momento.</p>';
+        return;
+      }
+
+      grid.innerHTML = data.map(item => `
+        <div class="bg-white p-6 rounded-2xl border border-rose-100 flex flex-col justify-between shadow-xs hover:shadow-md transition">
+          <div class="space-y-2">
+            <h3 class="font-serif text-lg text-slate-900">${item.nome_item}</h3>
+            <p class="text-rose-700 font-bold text-xl">R$ ${Number(item.valor).toFixed(2)}</p>
+          </div>
+          <div class="mt-6">
+            <a href="${item.link_mercado_pago}" target="_blank" rel="noopener noreferrer" 
+               class="block text-center bg-sky-500 text-white font-medium py-2.5 rounded-lg hover:bg-sky-600 transition text-sm">
+              Presentear via Mercado Pago
+            </a>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Controle do Painel Admin
+    function verificarSenhaAdmin() {
+      const senha = document.getElementById('admin-senha-input').value;
+      if (senha === SENHA_ADMIN) {
+        sessionStorage.setItem('admin_logado', 'true');
+        exibirPainelAdmin();
+      } else {
+        document.getElementById('admin-erro').classList.remove('hidden');
+      }
+    }
+
+    function verificarSessaoAdmin() {
+      if (sessionStorage.getItem('admin_logado') === 'true') {
+        exibirPainelAdmin();
+      } else {
+        document.getElementById('admin-login').classList.remove('hidden');
+        document.getElementById('admin-conteudo').classList.add('hidden');
+      }
+    }
+
+    function exibirPainelAdmin() {
+      document.getElementById('admin-login').classList.add('hidden');
+      document.getElementById('admin-conteudo').classList.remove('hidden');
+      carregarDadosAdmin();
+    }
+
+    function sairAdmin() {
+      sessionStorage.removeItem('admin_logado');
+      verificarSessaoAdmin();
+    }
+
+    async function carregarDadosAdmin() {
+      if (!supabaseClient) return;
+
+      const { data, error } = await supabaseClient.from('convidados').select('*').order('created_at', { ascending: false });
+      if (error) return;
+
+      let totalConvidados = data.length;
+      let totalAcompanhantes = data.reduce((acc, curr) => acc + (curr.acompanhantes || 0), 0);
+      
+      document.getElementById('stat-total-convidados').innerText = totalConvidados;
+      document.getElementById('stat-total-acompanhantes').innerText = totalAcompanhantes;
+      document.getElementById('stat-total-geral').innerText = totalConvidados + totalAcompanhantes;
+
+      const tbody = document.getElementById('tabela-convidados-body');
+      tbody.innerHTML = data.map(c => `
+        <tr class="hover:bg-slate-50/50">
+          <td class="p-3 font-medium text-slate-800">${c.nome}</td>
+          <td class="p-3">${c.acompanhantes}</td>
+          <td class="p-3"><span class="px-2 py-1 rounded-full text-xs font-medium ${c.status === 'Confirmado' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">${c.status}</span></td>
+          <td class="p-3 text-xs text-slate-400">${new Date(c.created_at).toLocaleDateString('pt-BR')}</td>
+        </tr>
+      `).join('');
+    }
+
+    async function adicionarPresente(e) {
+      e.preventDefault();
+      const nome_item = document.getElementById('novo-item-nome').value;
+      const valor = parseFloat(document.getElementById('novo-item-valor').value);
+      const link_mercado_pago = document.getElementById('novo-item-link').value;
+
+      if (!supabaseClient) return;
+
+      const { error } = await supabaseClient.from('presentes').insert([{ nome_item, valor, link_mercado_pago }]);
+      if (!error) {
+        alert('Presente cadastrado com sucesso!');
+        document.getElementById('novo-item-nome').value = '';
+        document.getElementById('novo-item-valor').value = '';
+        document.getElementById('novo-item-link').value = '';
+      } else {
+        alert('Erro ao cadastrar presente.');
+      }
+    }
+  </script>
+</body>
+</html>
